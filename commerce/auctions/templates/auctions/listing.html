@@ -1,0 +1,215 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% load static %}
+    <style>
+        .indent {
+            text-indent: 50px;
+        }
+    </style>
+    <div id="message">
+    </div>
+    {% if message %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+    {% endif %}
+    {% if message2 %}
+    <div class="alert alert-danger" role="alert">
+        {{ message2 }}
+    </div>
+    {% endif %}
+    {% if winner_bid %}
+            <div class="alert alert-success" role="alert">You Won the Auction! Please contact {{ listing.owner.username }} at {{ listing.owner.email }}</div>
+    {% endif %}
+    </div>
+<div class="row">
+    <div class="col-6">
+        <img style="width:auto;max-width:100%;" src="{{ listing.image_url.url }}">
+    </div>
+    <div class="col-6">
+        <h2>Listing: {{ listing.title }}</h2>
+        <p>{{ listing.description }}</p>
+        <h3>Owner: {{ listing.owner }}</h3>
+        {% if auction_owner and listing.is_active %}
+            <input id="activity" type="hidden" value="{{ listing.id }}">
+            <input id="bid" type="hidden" value="{{ listing.price.user.email }}">
+            <input id="bid2" type="hidden" value="{{ listing.price.user.username }}">
+            <br>
+            <button id="end_auction" class="btn btn-danger" type="button">Close Auction</button>
+            <br>
+        {% else %}
+            {% if listing.is_active %}
+                {% if in_watchlist %}
+                    <form method="POST" action="{% url 'end_watchlist' %}">
+                        {% csrf_token %}
+                        <input name="end_item" type="hidden" value="{{ listing.id }}">
+                        <input class="btn btn-danger btn-lg" type="submit" value="Remove from Watchlist">
+                    </form>
+                {% else %}
+                    <form method="POST" action="{% url 'add_watchlist' %}">
+                        {% csrf_token %}
+                        <input name="add_item" type="hidden" value="{{ listing.id }}">
+                        <input class="btn btn-success btn-lg" type="submit" value="Add to Watchlist">
+                    </form>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        <br>
+        {% if listing.is_active %}
+            <h5>Current Bid: ${{ listing.price.price|floatformat:2 }} By {{ listing.price.user.username }}</h5>
+        {% else %}
+            <h5>This product was sold for ${{ listing.price.price|floatformat:2 }}</h5>
+        {% endif %}
+        {% if not auction_owner and listing.is_active %}
+            <form action="{% url 'place_bid' %}" method="POST">
+                {% csrf_token %}
+                <h5>Place Your Bid:</h5>
+                <div style="width:50%;" class="input-group mb-3">
+                    <input name="listing_id" type="hidden" value="{{ listing.id }}">
+                    <span class="input-group-text">$</span>
+                    <input placeholder="Type Out Your Bid" class="form-control" min="{{ listing.price.price }}" step="any" name="bid" type="number">
+                    <input class="btn btn-outline-secondary" type="submit" placeholder="Submit Bid">
+                </div>
+            </form>
+        {% endif %}
+        </div>
+</div>
+    <center style="margin:auto;">
+        {% if not auction_owner and listing.is_active %}
+            <form action="{% url 'comment' %}" method="POST">
+                {% csrf_token %}
+                <input name="pk" type="hidden" value="{{ listing.id }}">
+                <input name="comment_info" type="hidden" value="">
+                <div style="width:50%;height:100px;" class="input-group mb-3">
+                    <input class="form-control" name="comment" style="resize: vertical;overflow: auto;box-sizing: border-box;height:100%;" type="text" placeholder="Write down your comments">
+                    <input class="btn btn-outline-secondary" type="submit" placeholder="Enter">
+                </div>
+            </form>
+        {% endif %}
+        <br>
+    </center>
+    <div id="comment_section">
+        <input id="listing_value" type="hidden" value="{{ listing.id }}">
+    </div>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            load_comments();
+            const button = document.getElementById('end_auction');
+            const data = document.getElementById('activity').value;
+            button.addEventListener('click', function() {
+                fetch('/end_listing', {
+                 method: 'POST',
+                 headers: {"Content-type": "application/json", "X-CSRFtoken":"{{ csrf_token }}"},
+                 body: JSON.stringify({
+                    listing_id: data
+                 })
+               })
+               .then(response => response.json())
+               .then(result => {
+                   // Print result
+                   console.log(result);
+                   const data2 = document.getElementById('bid').value;
+                   const data3 = document.getElementById('bid2').value;
+                   console.log(data2);
+                   const message = document.getElementById('message');
+                   const innerDiv = document.createElement('div');
+                   innerDiv.classList.add("alert", "alert-success");
+                   innerDiv.role = "alert";
+                   innerDiv.textContent = `Please contact ${data3} at ${data2}`;
+                   message.appendChild(innerDiv);
+                   var parentContainer = button.parentNode;
+                   parentContainer.removeChild(button);
+                });
+            });
+        });
+
+        function reply_comment(comment_id, listing_id) {
+            const comment_div = document.getElementById(`comment_${comment_id}`);
+            const form = document.createElement('form');
+            form.action = "{% url 'comment' %}";
+            form.method = "POST";
+            var csrfInput = document.createElement("input");
+            csrfInput.type = "hidden";
+            csrfInput.name = "csrfmiddlewaretoken";
+            csrfInput.value = "{{ csrf_token }}"; // Fetch CSRF token from Django template context
+            form.appendChild(csrfInput);
+            var listing = document.createElement('input');
+            listing.name = 'pk';
+            listing.type = 'hidden';
+            listing.value = listing_id;
+            var comment_info = document.createElement('input');
+            comment_info.name = 'comment_info';
+            comment_info.type = 'hidden';
+            comment_info.value = comment_id;
+            form.appendChild(comment_info);
+            form.appendChild(listing);
+            var styling = document.createElement('div');
+            styling.style.width = '50%';
+            styling.style.height = '100px';
+            styling.classList.add('input-group', 'mb-3');
+            var comment = document.createElement('input');
+            comment.classList.add('form-control');
+            comment.name = "comment";
+            comment.style.resize = 'vertical';
+            comment.style.overflow = 'auto';
+            comment.style.height = '100%';
+            comment.placeHolder = 'Reply';
+            var submit = document.createElement('input');
+            submit.classList.add('btn', 'btn-outline-secondary');
+            submit.type = 'submit';
+            submit.placeHolder = 'Enter';
+            styling.appendChild(comment);
+            styling.appendChild(submit);
+            form.appendChild(styling);
+            comment_div.appendChild(form);
+        }
+
+        function load_comments()    {
+            const listing = document.getElementById('listing_value');
+            fetch('/comment', {
+             method: 'PUT',
+             headers: {"Content-type": "application/json", "X-CSRFtoken":"{{ csrf_token }}"},
+             body: JSON.stringify({
+                listing_id: listing.value,
+               })
+             })
+             .then(response => response.json())
+             .then(result => {
+             // Print result
+                const comment_section = document.getElementById('comment_section');
+                result.forEach(item => {
+                const outerdiv = document.createElement('div');
+                outerdiv.id = `comment_${item.id}`;
+                outerdiv.style.width = '100%';
+                outerdiv.style.padding = '20px';
+                const info = document.createElement('span');
+                info.style.padding = '20px';
+                const image = document.createElement('i');
+                image.classList.add('fa', 'fa-reply');
+                image.onclick = function() {
+                    reply_comment(item.id, listing.value);
+                }
+                if (item.reply_to === null) {
+                    info.textContent = `${item.user}: ${item.comment}`;
+                    outerdiv.classList.add('border');
+                    outerdiv.appendChild(info);
+                    comment_section.appendChild(outerdiv);
+                } else {
+                    info.textContent = `reply to ${item.reply_user}: ${item.comment} By ${item.user}`;
+                    outerdiv.classList.add('indent');
+                    const addItem = document.getElementById(`comment_${item.reply_to}`);
+                    outerdiv.appendChild(info);
+                    addItem.appendChild(outerdiv);
+                }
+                outerdiv.appendChild(image);
+
+
+                });
+             });
+
+        }
+    </script>
+
+{% endblock %}

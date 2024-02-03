@@ -1,0 +1,58 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <style>
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            margin: 10px; /* Add margin as needed */
+        }
+
+        /* Style for each card */
+        .stealth {
+            width: calc(16.66% - 10px); /* 6 columns, minus margin */
+            margin-bottom: 20px; /* Adjust as needed */
+        }
+    </style>
+    <h2>Listings{{ extra }}</h2>
+    <form class="d-flex" method="POST" action="{% url 'search_item' %}">
+        {% csrf_token %}
+        <input style="width:50%;" type="search" class="form-control me-2" placeholder="Search Listings" required="required" name="searched" aria-label="Search">
+        <input type="submit" class="btn btn-outline-secondary" value="Search">
+    </form>
+    <div class="card-container">
+     {% for listing in category_list %}
+        <div class="card stealth" style="width: 18rem; margin:10px;">
+            <img class="card-img-top" src="{{ listing.image_url.url }}" alt="Image Not Found">
+            <div class="card-body">
+                <h5 class="card-title">{{ listing.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">Viewed {{ listing.times_visited }} time(s)</h6>
+                <p class="card-text">${{ listing.price.price|floatformat:2 }}</p>
+                <p class="card-text">{{ listing.description }}</p>
+                <a href="{% url 'listing' listing.id %}" class="btn btn-primary">Visit Product</a>
+            </div>
+        </div>
+    {% endfor %}
+    {% for trash in trashes %}
+        <div class="card stealth" style="width: 18rem; margin:10px;">
+            <img class="card-img-top" src="{{ trash.image_url.url }}" alt="Image Not Found">
+            <div class="card-body">
+                <h5 class="card-title">Location: {{ trash.location }}</h5>
+                <p class="card-text">{{ trash.description }}</p>
+                <button onclick="openGoogleMaps({{ trash.location }})" class="btn btn-primary">Open Google Maps</button>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    <script>
+    function openGoogleMaps(destination) {
+      // Replace 'latitude' and 'longitude' with the actual coordinates or address
+      // Construct the Google Maps URL
+      var mapsUrl = `https://www.google.com/maps/search/?api=1&query=${destination}`;
+
+      // Open a new tab with the Google Maps URL
+      window.open(mapsUrl, '_blank');
+    }
+    </script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<form action="{% url 'create' %}" enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    <!--{{ form.as_p }}
+    <button type="submit">Upload</button>!-->
+    <center>
+        <h2>Create Upcycling Listing</h2>
+        <div style="width:50%;" class="input-group input-group-lg">
+          <span class="input-group-text" id="inputGroup-sizing-lg">Title</span>
+          {{ form.title }}
+        </div>
+        <br>
+        <div style="width:50%;" class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupFile02">Image of Product</label>
+          {{ form.image_url }}
+        </div>
+        <br>
+        <div style="width:50%;" class="input-group">
+          <span class="input-group-text">Description</span>
+          {{ form.description }}
+        </div>
+        <br>
+        <div style="width:50%;" class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default">Minimum Bid:</span>
+          <span class="input-group-text">$</span>
+          {{ form.custom_input }}
+        </div>
+        <br>
+        <input class="btn btn-primary" role="button" type="submit" value="Create Listing">
+    </center>
+    </form>
+
+{% endblock %}

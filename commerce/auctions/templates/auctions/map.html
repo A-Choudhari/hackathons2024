@@ -1,0 +1,271 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+<style>
+    #map {
+        height:500px;
+        width:100%;
+    }
+    .container {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr; /* Create three columns, the middle one is auto-sized */
+        padding: 10px;
+    }
+</style>
+{% if message %}
+    <div role="alert" class="alert alert-success">
+        {{ message }}
+        {% if listing %}
+            <div style="text-align:right;">
+                <a class="btn btn-success" role="button" href="{% url 'listing' listing %}">View Listing</a>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+<div id="map">
+</div>
+
+
+
+<script>
+    var map;
+    var markers = [];
+    var infowindows = [];
+    function initMap() {
+        const success = (position) => {
+            console.log(position);
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            console.log(latitude);
+            console.log(longitude);
+            var myLatlng = new google.maps.LatLng(latitude, longitude);
+            const location = {'lat':latitude, 'lng':longitude};
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 13,
+                center:location
+            });
+
+
+            const mapStyles = [
+                {
+                    featureType: 'poi', // Points of interest (e.g., gas stations, schools)
+                    elementType: 'labels',
+                    stylers: [{ visibility: 'off' }],
+                },
+            ];
+            map.setOptions({ styles: mapStyles });
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                icon: "http://www.robotwoods.com/dev/misc/bluecircle.png"
+            });
+            marker.setMap(map);
+            placeMarkers();
+            findCenters(myLatlng);
+        }
+
+        const error = () => {
+            console.log("User did not provide location");
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error);
+    }
+
+
+    function placeMarkers()
+    {
+        fetch('markers_info')
+            .then(response => response.json())
+            .then(data => {
+             // Print data
+                console.log(data);
+                data.forEach(trash => {
+                    console.log(trash);
+                    const commaIndex = trash.location.indexOf(',');
+                    const latitude = parseFloat(trash.location.substring(0, commaIndex));
+                    const longitude = parseFloat(trash.location.substring(commaIndex+2, trash.location.length));
+                    var myLatlng = new google.maps.LatLng(latitude, longitude);
+                    var addy;
+                    convertToAddress(latitude, longitude)
+                    .then(address => {
+                        addy = address;
+                        var iconSize = new google.maps.Size(25, 25);
+                        const marker = new google.maps.Marker({
+                            position: myLatlng,
+                            map,
+                            icon: {
+                                url: "https://icons.veryicon.com/png/o/commerce-shopping/jkd_wap/trash-85.png",
+                                scaledSize: iconSize,
+                                dataMarkerId: trash.id,
+                            }
+                        });
+                        const imge = trash.image;
+                        markers.push(marker);
+                        const contentString =
+                            `<div data-marker-id="${trash.id}" class="card stealth" style="width:18rem;margin:10px;" id="content">
+                            <img width="150px" height="150px" class="card-img-top" src="${imge}" alt="Image Not Found">
+                            <div class="card-body">
+                            <h5 class="card-title">${addy}</h5>
+                            <p class="card-text">${trash.description}</p>
+                            <button onclick="openGoogleMaps(${latitude}, ${longitude})" class="btn btn-primary">Open Google Maps</button>
+                            <p>Is it still there?<i style="padding:5px;" onclick="toggleColor(this)" class="far fa-thumbs-up"></i><i style="padding:5px" onclick="not_active(${trash.id}, this)" class="far fa-thumbs-down"></i></p>
+                            </div>
+                            </div>`;
+                        const infowindow = new google.maps.InfoWindow({
+                          content: contentString,
+                          ariaLabel: "Uluru",
+                        });
+                        marker.addListener('click', function() {
+                          closeAllInfoWindows();
+                          infowindow.open({
+                            anchor: marker,
+                            map
+                          });
+                        });
+                        infowindows.push(infowindow);
+                        marker.setMap(map);
+                    });
+                });
+
+             })
+    }
+
+    function findCenters(location) {
+        var request = {
+        location: location,
+        radius: 10000,  // increase to 50,000 for final showcase
+        keyword: 'recycling center',
+        }
+        console.log(map);
+        var service = new google.maps.places.PlacesService(map);
+        service.nearbySearch(request, callback);
+    }
+
+
+    function callback(results, status)
+    {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+            console.log(results.length);
+            for (var i = 0; i < results.length;i++)
+            {
+                (function(index) {
+                    var place = results[index];
+                    const latitude = place.geometry.location.lat();
+                    const longitude = place.geometry.location.lng();
+                    var myLatlng = new google.maps.LatLng(latitude, longitude);
+                    var iconSize = new google.maps.Size(25, 25);
+                    var addy;
+                    convertToAddress(latitude, longitude)
+                    .then(address => {
+                        addy = address;
+                        const marker = new google.maps.Marker({
+                            position: myLatlng,
+                            map,
+                            icon: {
+                                url:"https://www.recycling.com/wp-content/uploads/2016/06/recycling-symbol-icon-solid-dark-green.png",
+                                scaledSize: iconSize
+                            }
+                        });
+                        var photoUrl;
+                        if (place.photos)
+                        {
+                            photoUrl = place.photos[0].getUrl();
+                        } else {
+                            photoUrl = "https://via.placeholder.com/150"
+                        }
+                        const contentString =
+                            `<div class="card stealth" style="width:18rem;margin:10px;" id="content">
+                            <img width="150px" height="150px" class="card-img-top" src="${photoUrl}" alt="Image Not Found">
+                            <div class="card-body">
+                                <h5 class="card-title">${place.name}</h5>
+                                <p class="card-text">${addy}</p>
+                                <button onclick="openGoogleMaps(${latitude}, ${longitude})" class="btn btn-primary">Open Google Maps</button>
+                            </div>
+                            </div>`;
+
+                        const infowindow = new google.maps.InfoWindow({
+                            content: contentString,
+                        });
+                        marker.addListener('click', function() {
+                            closeAllInfoWindows();
+                            infowindow.open({
+                                anchor: marker,
+                                map
+                            });
+                        });
+                        infowindows.push(infowindow);
+                        marker.setMap(map);
+                    });
+                })(i);
+            }
+        }
+    }
+
+    function closeAllInfoWindows() {
+        for (var i = 0; i < infowindows.length; i++) {
+            infowindows[i].close();
+        }
+    }
+
+    function openGoogleMaps(latitude, longitude) {
+      // Create a URL for Google Maps with the specified latitude and longitude
+      const mapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+      // Open a new window with the Google Maps link
+      window.open(mapsUrl, '_blank');
+    }
+
+    function convertToAddress(latitude, longitude) {
+        return new Promise((resolve, reject) => {
+            const geocoder = new google.maps.Geocoder();
+            const latLng = new google.maps.LatLng(latitude, longitude);
+
+            geocoder.geocode({ 'location': latLng }, (results, status) => {
+                if (status === 'OK' && results && results.length > 0) {
+                    const address = results[0].formatted_address;
+                    console.log('Converted Address:', address);
+                    resolve(address); // Resolve the Promise with the address
+                } else {
+                    console.error('Error converting coordinates to address:', status);
+                    reject(new Error('Geocoding failed')); // Reject the Promise with an error
+                }
+            });
+        });
+    }
+
+
+    function toggleColor(element)
+    {
+        element.style.color = 'green';
+    }
+
+    function not_active(id_data, element)
+    {
+        element.style.color = 'red';
+        fetch('end_trash', {
+            method: 'PUT',
+            headers: {"Content-type": "application/json", "X-CSRFtoken":"{{ csrf_token }}"},
+            body: JSON.stringify({
+                id_data: id_data
+            })
+        });
+        for (var i = 0; i < markers.length; i++) {
+            if (markers[i].dataMarkerId === id_data) {
+                markers[i].setMap(null); // Return the marker with matching dataMarkerId
+            }
+        }
+        for (var i = 0; i < infowindows.length; i++) {
+            const markerId = infowindows[i].getContent()
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            const beta_id = tempDiv.querySelector('[data-marker-id]').getAttribute('data-marker-id');
+            if (beta_id === id_data) {
+                infowindows[i].close(); // Return the marker with matching dataMarkerId
+            }
+        }
+    }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/
+js?key=AIzaSyCCRiebHCZwS-9YWmth-iM4HMMu7Bzim6U&libraries=places&callback=initMap"></script>
+
+{% endblock %}

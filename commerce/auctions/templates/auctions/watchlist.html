@@ -1,0 +1,26 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    {% if message %}
+    <div>{{ message }}</div>
+    {% endif %}
+    <h2>Watchlist</h2>
+
+    {% for listing in listings %}
+        {% if listing.is_active %}
+                <div class="row">
+                    <div class="card" style="width: 18rem;">
+                      <img class="card-img-top" src="{{ listing.image_url.url }}" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title">{{ listing.title }}</h5>
+                        <p class="card-text">${{ listing.price.price|floatformat:2 }}</p>
+                        <p class="card-text">{{ listing.description }}</p>
+                        <a href="{% url 'listing' listing.id %}" class="btn btn-primary">Visit Product</a>
+                      </div>
+                    </div>
+                </div>
+        {% endif %}
+    {% endfor %}
+
+{% endblock %}
