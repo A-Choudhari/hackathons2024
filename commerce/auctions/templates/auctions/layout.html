@@ -2,61 +2,74 @@
 
 <html lang="en">
     {% load static %}
+    <style>
+        hr {
+            border: none;
+            height: 5px;
+            background-color: 'black'; /* Change color as needed */
+            margin: 10px 0; /* Adjust margin as needed */
+        }
+    </style>
     <head>
-        <title>{% block title %}Auctions{% endblock %}</title>
+        <title>UPCYCLING</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
 
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
     </head>
     <body>
-        <h1>Auctions</h1>
-        <div>
+
             {% if user.is_authenticated %}
-                Signed in as <strong>{{ user.username }}</strong>.
+            <div style="display: flex;align-items:center;padding:0;">
+                <img width="150px" height="150px;" src="{% static 'images/logo.png' %}" alt="Logo Not Found">
+                <h1 style="font-family:'League Spartan';margin:0;padding:0"><strong>{% block title %}{% endblock %}</strong></h1>
+            </div>
             {% else %}
                 Not signed in.
             {% endif %}
-        </div>
+        <hr>
         <ul class="nav">
             {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'index' %}">Interactive Map</a>
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'profile' %}"><i class="fas fa-user"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'index' %}">Interactive Map</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'display_listing' %}">Active Listings</a>
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'display_listing' %}">Active Listings</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'create' %}">Create Listings</a>
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'create' %}">Create Listings</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'watchlist' %}">Watchlist</a>
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'watchlist' %}">Watchlist</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'auctions_won' %}">Auctions Won</a>
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'auctions_won' %}">Listings Won</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'recycle_deposit' %}">Recycling Deposit</a>
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'recycle_deposit' %}">Recycling Deposit</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'recognize_item' %}">EcoScan</a>
                 </li>
+                <div style="text-align:right;">
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'logout' %}">Log Out</a>
+                </div>
             {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'login' %}">Log In</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    <a class="nav-link" style="color: gray;" role="button" href="{% url 'register' %}">Register</a>
                 </li>
             {% endif %}
         </ul>
         <hr>
         {% block body %}
-
         {% endblock %}
+        </div>
 
     </body>
 </html>

@@ -1,5 +1,5 @@
 {% extends "auctions/layout.html" %}
-
+{% block title %}UPCYCLING{% endblock %}
 {% block body %}
 
 <form action="{% url 'create' %}" enctype="multipart/form-data" method="POST">
@@ -7,14 +7,14 @@
     <!--{{ form.as_p }}
     <button type="submit">Upload</button>!-->
     <center>
-        <h2>Create Upcycling Listing</h2>
+        <h2 style="font-family:'verdana';">Create Upcycling Listing</h2>
         <div style="width:50%;" class="input-group input-group-lg">
           <span class="input-group-text" id="inputGroup-sizing-lg">Title</span>
           {{ form.title }}
         </div>
         <br>
         <div style="width:50%;" class="input-group mb-3">
-          <label class="input-group-text" for="inputGroupFile02">Image of Product</label>
+          <label class="input-group-text">Image of Product</label>
           {{ form.image_url }}
         </div>
         <br>

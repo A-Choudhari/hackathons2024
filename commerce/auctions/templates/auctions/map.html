@@ -1,4 +1,5 @@
 {% extends "auctions/layout.html" %}
+{% block title %}Eco Deposit{% endblock %}
 
 {% block body %}
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
@@ -23,8 +24,10 @@
         {% endif %}
     </div>
 {% endif %}
-<div id="map">
-</div>
+{% if user.is_authenticated %}
+    <div id="map">
+    </div>
+{% endif %}
 
 
 
@@ -54,10 +57,12 @@
                     stylers: [{ visibility: 'off' }],
                 },
             ];
+            var iconSize = new google.maps.Size(35, 35);
             map.setOptions({ styles: mapStyles });
             var marker = new google.maps.Marker({
                 position: myLatlng,
-                icon: "http://www.robotwoods.com/dev/misc/bluecircle.png"
+                icon: "http://www.robotwoods.com/dev/misc/bluecircle.png",
+                scaledSize: iconSize,
             });
             marker.setMap(map);
             placeMarkers();
@@ -83,7 +88,7 @@
                     console.log(trash);
                     const commaIndex = trash.location.indexOf(',');
                     const latitude = parseFloat(trash.location.substring(0, commaIndex));
-                    const longitude = parseFloat(trash.location.substring(commaIndex+2, trash.location.length));
+                    const longitude = parseFloat(trash.location.substring(commaIndex+1, trash.location.length));
                     var myLatlng = new google.maps.LatLng(latitude, longitude);
                     var addy;
                     convertToAddress(latitude, longitude)
@@ -105,8 +110,8 @@
                             `<div data-marker-id="${trash.id}" class="card stealth" style="width:18rem;margin:10px;" id="content">
                             <img width="150px" height="150px" class="card-img-top" src="${imge}" alt="Image Not Found">
                             <div class="card-body">
-                            <h5 class="card-title">${addy}</h5>
-                            <p class="card-text">${trash.description}</p>
+                            <h5 class="card-title" style="font-family:'DM Sans';">${addy}</h5>
+                            <p class="card-text" style="font-family:'Inter';">${trash.description}</p>
                             <button onclick="openGoogleMaps(${latitude}, ${longitude})" class="btn btn-primary">Open Google Maps</button>
                             <p>Is it still there?<i style="padding:5px;" onclick="toggleColor(this)" class="far fa-thumbs-up"></i><i style="padding:5px" onclick="not_active(${trash.id}, this)" class="far fa-thumbs-down"></i></p>
                             </div>
@@ -177,8 +182,8 @@
                             `<div class="card stealth" style="width:18rem;margin:10px;" id="content">
                             <img width="150px" height="150px" class="card-img-top" src="${photoUrl}" alt="Image Not Found">
                             <div class="card-body">
-                                <h5 class="card-title">${place.name}</h5>
-                                <p class="card-text">${addy}</p>
+                                <h5 class="card-title" style="font-family:'DM Sans';">${place.name}</h5>
+                                <p class="card-text" style="font-family:'Inter';">${addy}</p>
                                 <button onclick="openGoogleMaps(${latitude}, ${longitude})" class="btn btn-primary">Open Google Maps</button>
                             </div>
                             </div>`;

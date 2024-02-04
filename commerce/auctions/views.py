@@ -10,7 +10,11 @@ import json
 from .forms import ImageUploadForm, TrashForm
 from geopy.geocoders import Nominatim
 import numpy as np
-from tensorflow.keras import layers, models
+from keras import layers, models
+
+from openai import OpenAI # OpenAI official Python package
+
+import json
 
 
 def index(request):
@@ -54,7 +58,8 @@ def end_trash(request):
         if data.get("id_data") is not None:
             id_trash = data["id_data"]
             trash_beta = Trash.objects.get(pk=id_trash)
-            trash_beta.delete()
+            trash_beta.is_active = False
+            trash_beta.save()
         return JsonResponse("Success", safe=False)
 
 
@@ -66,7 +71,7 @@ def create(request):
             form.save(commit=False)
             form.instance.owner = request.user
             price = float(form.cleaned_data['custom_input'])
-            if price > 0.00:
+            if price >= 0.00:
                 new_item = Bids(price=price, user=request.user)
                 new_item.save()
                 form.instance.price = new_item
@@ -170,7 +175,7 @@ def search_item(request):
     if request.method == "POST":
         searched = request.POST["searched"]
         posts = Listings.objects.filter(is_active=True, title__contains=searched)
-        return render(request, "auctions/category.html", {"extra": f" Under {searched}", "category_list":posts})
+        return render(request, "auctions/category.html", {"extra": f" UNDER {searched.upper()}", "category_list":posts})
 
 
 def profile(request):
@@ -357,3 +362,49 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+def recognize_item(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        image_url = data.get('image')
+        if image_url:
+            client = OpenAI(api_key="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")
+            response = client.chat.completions.create(
+                model="gpt-4-vision-preview",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text",
+                             "text": "Things that can be recycled are most types of plastics (including Plastic #1 (PET), Plastic #2 (HDPE), Plastic #3 (PVC), Plastic #4 (LDPE), Plastic #5 (Polypropylene), Plastic #7 (Other), Plastic Bottles, and Plastic Cups), paper, metal, and glass. Things that cannot be recycled are wood, cloth, organic materials, chemicals, hazardous waste, and electronics.\nWhat is the item shown in the image? Give me just the answer in as few words as possible.\nCan I recycle the item shown in the image? Give a one word YES or NO answer.\nSeperate the answers with a comma"},
+                            {
+                                "type": "image_url",
+                                "image_url": f"{image_url}",
+                            },
+                        ],
+                    }
+                ],
+                max_tokens=300,
+            )
+
+            text_output = response.choices[0].message.content
+
+            output_list = text_output.replace(".", "").replace(", ", ",").split(",")
+            detected_obj = ""
+            recyclable_y_n = ""
+
+            if len(output_list) == 2:
+                detected_obj = output_list[0]
+                recyclable_y_n = output_list[1].lower()
+
+            print("Detected object:", detected_obj)
+            if recyclable_y_n == "yes":
+                return JsonResponse({"result": "The item is recyclable.", "object_name":detected_obj})
+            elif recyclable_y_n == "no":
+                return JsonResponse({"result": "The item is not recyclable.", "object_name":detected_obj})
+            else:
+                return JsonResponse({"result":"Not sure.", "object_name": detected_obj})
+    else:
+        return render(request, "auctions/recognize_item.html")
+

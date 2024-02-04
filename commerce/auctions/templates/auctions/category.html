@@ -1,5 +1,5 @@
 {% extends "auctions/layout.html" %}
-
+{% block title %}UPCYCLING{% endblock %}
 {% block body %}
     <style>
         .card-container {
@@ -15,7 +15,7 @@
             margin-bottom: 20px; /* Adjust as needed */
         }
     </style>
-    <h2>Listings{{ extra }}</h2>
+    <h4 style="font-family:'verdana';">LISTINGS {{ extra }}</h4>
     <form class="d-flex" method="POST" action="{% url 'search_item' %}">
         {% csrf_token %}
         <input style="width:50%;" type="search" class="form-control me-2" placeholder="Search Listings" required="required" name="searched" aria-label="Search">
@@ -24,13 +24,13 @@
     <div class="card-container">
      {% for listing in category_list %}
         <div class="card stealth" style="width: 18rem; margin:10px;">
-            <img class="card-img-top" src="{{ listing.image_url.url }}" alt="Image Not Found">
+            <img width="300px" height="300px" class="card-img-top" src="{{ listing.image_url.url }}" alt="Image Not Found">
             <div class="card-body">
-                <h5 class="card-title">{{ listing.title }}</h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary">Viewed {{ listing.times_visited }} time(s)</h6>
-                <p class="card-text">${{ listing.price.price|floatformat:2 }}</p>
-                <p class="card-text">{{ listing.description }}</p>
-                <a href="{% url 'listing' listing.id %}" class="btn btn-primary">Visit Product</a>
+                <h5 style="font-family:'DM Sans';" class="card-title">{{ listing.title }}</h5>
+                <h6 style="font-family:'DM Sans';" class="card-subtitle mb-2 text-body-secondary">Viewed {{ listing.times_visited }} time(s)</h6>
+                <p style="font-family:'Inter';" class="card-text">${{ listing.price.price|floatformat:2 }}</p>
+                <p style="font-family:'Inter';" class="card-text">{{ listing.description }}</p>
+                <a href="{% url 'listing' listing.id %}" style="font-family:'Inter';" class="btn btn-secondary">Visit Product</a>
             </div>
         </div>
     {% endfor %}

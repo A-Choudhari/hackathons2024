@@ -14,7 +14,8 @@ class ImageUploadForm(forms.ModelForm):
 
 
 class TrashForm(forms.ModelForm):
-    location = forms.CharField(widget=forms.TextInput(attrs={'type':'text','class':'form-control', 'aria-describedby':'button-addon1', 'required':'required'}))
+    location = forms.CharField(widget=forms.TextInput(attrs={'type':'text','name':'location_form', 'class':'form-control',
+                                                             'aria-describedby':'button-addon1', 'required':'required'}))
     image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'class': 'form-control', 'id':'inputGroupFile02', 'required':'required', 'id':'location'}))
     description = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'cols': 40, 'class': 'form-control', 'aria_label': 'Description', 'required':'required'}))
 

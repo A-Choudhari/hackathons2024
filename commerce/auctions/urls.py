@@ -22,4 +22,5 @@ urlpatterns = [
     path("search_item", views.search_item, name="search_item"),
     path("markers_info", views.markers_info, name="markers_info"),
     path("end_trash", views.end_trash, name="end_trash"),
+    path("recognize_item", views.recognize_item, name="recognize_item"),
 ]

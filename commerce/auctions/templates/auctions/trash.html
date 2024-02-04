@@ -1,12 +1,12 @@
 {% extends "auctions/layout.html" %}
-
+{% block title %}Eco Deposit{% endblock %}
 {% block body %}
 
     <div id="message"></div>
     <center>
         <form action="{% url 'recycle_deposit' %}" enctype="multipart/form-data" method="POST">
             {% csrf_token %}
-            <h1>Recycling Deposit Near You</h1>
+            <h1 style="font-family:'verdana';">Recycling Deposit Near You</h1>
             <div style="width:50%;" class="input-group mb-3">
               <label class="input-group-text" for="inputGroupFile02">Image of Deposit</label>
               {{ form.image }}
@@ -23,37 +23,43 @@
             <input type="submit" class="btn btn-primary" value="Submit Recycling Deposit">
         </form>
     </center>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const location = document.getElementById('findLocation');
-            location.addEventListener('click', function() {
-                initMap();
-            });
+    function initMap() {
+        var searchInput = document.querySelector('input[name="location"]');
+        var autocomplete = new google.maps.places.Autocomplete(searchInput, {
+            types: ['address'],
+            componentRestrictions: { country: 'us' }
+        });
+        autocomplete.addListener('place_changed', function () {
+            var near_place = autocomplete.getPlace();
+            //searchInput.textContent = near_place;
         });
 
+        const locationButton = document.getElementById('findLocation');
+        locationButton.addEventListener('click', function() {
+            const success = (position) => {
+                console.log(position);
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                const coordinates = `${latitude},${longitude}`;
+                console.log(coordinates);
+                const accuracy = position.coords.accuracy;
+                console.log(accuracy);
+                const new_location = document.getElementById('id_location');
+                new_location.value = coordinates;
+                locationButton.remove();
+            }
+            const error = () => {
+                console.log("User did not provide location");
+                locationButton.textContent = "Location was not provided";
+            }
 
-    function initMap() {
-        const location = document.getElementById('findLocation');
-        const success = (position) => {
-            console.log(position);
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            const coordinates = `${latitude},${longitude}`;
-            console.log(coordinates);
-            const accuracy = position.coords.accuracy;
-            console.log(accuracy);
-            const new_location = document.getElementById('id_location');
-            new_location.value = coordinates;
-            location.remove()
-        }
-        const error = () => {
-            console.log("User did not provide location");
-            location.textContent = "Location was not provided";
-        }
-
-        navigator.geolocation.getCurrentPosition(success, error, {enableHighAccuracy: true});
+            navigator.geolocation.getCurrentPosition(success, error, {enableHighAccuracy: true});
+        });
     }
-
     </script>
-
+    <script async defer src="https://maps.googleapis.com/maps/api/
+js?key=AIzaSyCCRiebHCZwS-9YWmth-iM4HMMu7Bzim6U&libraries=places&callback=initMap">
+    </script>
 {% endblock %}

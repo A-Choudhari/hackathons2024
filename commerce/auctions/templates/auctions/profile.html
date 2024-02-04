@@ -1,5 +1,5 @@
 {% extends "auctions/layout.html" %}
-
+{% block title %}UPCYCLING{% endblock %}
 {% block body %}
     <style>
         .card-container {
@@ -15,7 +15,7 @@
             margin-bottom: 20px; /* Adjust as needed */
         }
     </style>
-    <h2>Listings{{ extra }}</h2>
+    <h2 style="font-family:'verdana';">Listings{{ extra }}</h2>
     <div class="card-container">
      {% for listing in category_list %}
         <div class="card stealth" style="width: 18rem; margin:10px;">
@@ -31,9 +31,9 @@
     {% endfor %}
     {% for trash in trashes %}
         <div class="card stealth" style="width: 18rem; margin:10px;">
-            <img class="card-img-top" src="{{ trash.image_url.url }}" alt="Image Not Found">
+            <img class="card-img-top" src="{{ trash.image.url }}" alt="Image Not Found">
             <div class="card-body">
-                <h5 class="card-title">Location: {{ trash.location }}</h5>
+                <h5 class="card-title">Location: ({{ trash.location }})</h5>
                 <p class="card-text">{{ trash.description }}</p>
                 <button onclick="openGoogleMaps({{ trash.location }})" class="btn btn-primary">Open Google Maps</button>
             </div>
