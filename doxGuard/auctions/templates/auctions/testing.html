@@ -1,0 +1,15 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <center>
+    <img style="border-radius: 25px;width:80%;height:80%;" src="{% url 'stream_capture' %}">
+    </center>
+    <div style="display:hidden">
+    <audio style="display:none;" id="audioPlayer" controls>
+        <source src="{% url 'audio_capture' %}" type="audio/wav">
+
+    </audio>
+    </div>
+
+{% endblock %}
+

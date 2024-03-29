@@ -1,0 +1,88 @@
+{% extends "auctions/layout.html" %}
+{% block title %}EcoScan{% endblock %}
+{% block body %}
+        <style>
+        /* Position the button inside the video */
+        #videoContainer {
+            position: relative;
+            width: 600px; /* Adjust width of the container */
+            height: 450px; /* Adjust height of the container */
+        }
+        #video {
+            border-radius: 25px;
+            width: 100%;
+            height: 100%;
+        }
+        #captureButton {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            bottom: 10px; /* Adjust distance from left */
+            width: 50px; /* Adjust width of the button */
+            height: 50px; /* Adjust height of the button */
+            border-radius: 50%; /* Make it circular */
+            background-color: transparent; /* Transparent background */
+            border: 2px solid #fff; /* White border */
+            color: #fff; /* White text color */
+            font-size: 24px; /* Adjust font size */
+            text-align: center;
+            padding-top: 10px;
+        }
+    </style>
+
+    <div role="alert" id="text"></div>
+    <center>
+    <div id="videoContainer">
+        <video style="border-radius:25px;" id="video" width="600" height="450" autoplay></video><br><center><i id="captureButton" class="fas fa-camera"></i></center>
+    </div>
+    </center>
+    <canvas id="canvas" style="display: none;"></canvas>
+
+    <script>
+        // Access the user's camera and display the video stream
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                var video = document.getElementById('video');
+                video.srcObject = stream;
+            })
+            .catch(function(error) {
+                console.error('Error accessing camera:', error);
+            });
+
+        // Function to capture an image from the video stream
+        function captureImage() {
+            var video = document.getElementById('video');
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+            var captureButton = document.getElementById('captureButton');
+
+            // Draw the current frame of the video onto the canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Convert the canvas image to a data URL
+            var imageDataURL = canvas.toDataURL('image/jpeg');
+
+            // Create a FormData object to send the image data to the backend
+            console.log(imageDataURL);
+            // Example: Send the captured image to the backend using AJAX
+            fetch('/recognize_item', {
+                method: 'POST',
+                headers: {"X-CSRFtoken":"{{ csrf_token }}"},
+                body: JSON.stringify({
+                    image: imageDataURL
+                 })
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+                var text = document.getElementById('text');
+                text.classList.add('alert', 'alert-success');
+                text.textContent = `Object Detected: ${result.object_name}  ${result.result}`;
+            });
+        }
+
+        // Add event listener to the capture button
+        var captureButton = document.getElementById('captureButton');
+        captureButton.addEventListener('click', captureImage);
+    </script>
+{% endblock %}

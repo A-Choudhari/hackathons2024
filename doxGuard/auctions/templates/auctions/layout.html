@@ -1,0 +1,90 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}DoxGuard{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
+    </head>
+    <body>
+    <style>
+        .topnav {
+          overflow: hidden;
+          background-color: #333;
+          position: relative;
+        }
+
+        .active {
+            background-color:white;
+
+        }
+
+
+        .topnav #myLinks {
+          display: none;
+        }
+
+        .topnav a {
+          float: left;
+          color: white;
+          padding: 14px 16px;
+          text-decoration: none;
+          font-size: 17px;
+        }
+
+        .topnav a.icon {
+          float: right;
+          background-color: #ddd;
+          color: black;
+        }
+
+        .topnav a:hover {
+          background-color: #ddd;
+          color: black;
+        }
+    </style>
+        <!-- style="background-color:#ff8080;width:100%;border-radius:10px;" !-->
+    <div style="overflow:auto;">
+        <h1><img width="100px;" height="100px;" src="{% static 'doxLogo.png' %}">DoxGuard </h1>
+    </div>
+
+        <div style="text-align:right;">
+            {% if user.is_authenticated %}
+                Signed in as <strong>{{ user.username }}</strong>.
+            {% else %}
+                Not signed in.
+            {% endif %}
+        </div>
+
+        <ul style="" class="nav">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a style="color:black;" role="button" class="topnav active nav-link" href="{% url 'index' %}">Home</a>
+            </li>
+                <li class="nav-item">
+                    <a style="color:black;" role="button" class="active nav-link" href="{% url 'image_blur' %}">Images</a>
+                </li>
+                <li class="nav-item">
+                    <a style="color:black;" role="button" class="active nav-link" href="{% url 'video_blur' %}">Videos</a>
+                </li>
+                <li class="nav-item">
+                    <a style="color:black;" role="button" class="active nav-link" href="{% url 'liveCapture_blur' %}">Live Capture</a>
+                </li>
+                <li class="nav-item">
+                    <a style="color:black;" role="button" class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a style="color:black;" role="button" class="nav-link" href="{% url 'login' %}">Log In</a>
+                </li>
+                <li class="nav-item">
+                    <a style="color:black;" role="button" class="nav-link" href="{% url 'register' %}">Register</a>
+                </li>
+            {% endif %}
+        </ul>
+        <hr>
+        {% block body %}
+        {% endblock %}
+    </body>
+</html>

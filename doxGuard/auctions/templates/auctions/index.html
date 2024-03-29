@@ -1,0 +1,81 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<style>
+            .hero {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #drop-area {
+            width: 500px;
+            height: 300px;
+            padding: 20px;
+            background: #fff;
+            text-align:center;
+            border-radius:20px;
+        }
+
+        .image_view {
+            width:100%;
+            height: 100%;
+            border-radius:20px;
+            border: 2px dashed #bbb5ff;
+            background: #f7f8ff;
+            background-size:cover;
+            background-position:center;
+        }
+        .stealth {
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-bottom: 20px; /* Adjust as needed */
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* Adjust as needed */
+        }
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            margin: 10px; /* Add margin as needed */
+            padding:10px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* Adjust as needed */
+        }
+        .link {
+            margin: 2px; /* Adjust as needed */
+            width:50%;
+        }
+
+</style>
+<center>
+{% for obj in image %}
+<a class="link" style="padding:5px; width:50%;" href="{{ obj.image.url }}" download>
+    <div style="padding-left:10px;width:50%;" class="image_view stealth">
+        <h5>{{ obj.image.url|slice:"14:" }}</h5>
+    </div>
+</a>
+{% endfor %}
+{% for obj in video %}
+<a style="padding:5px;width:50%;" href="{{ obj.video.url }}" download>
+    <div style="padding-left:10px;width:50%;" class="image_view">
+        <h5>{{ obj.video.url|slice:"13:" }}</h5>
+    </div>
+</a>
+{% endfor %}
+</center>
+<br>
+<br>
+<h4>
+    About Us
+</h4>
+<p style="padding:5px;border: 1px solid black;">In a world where fraud and doxxing occur at a frequent rate, it is important that we protect ourselves online whether it be through photos, videos, or streams. Our project hopes to solve the problem of Doxxing and be implmented into apps like YouTube, Twitch, and other content services.</p>
+{% endblock %}

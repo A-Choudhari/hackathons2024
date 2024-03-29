@@ -1,0 +1,124 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<center><h2>Image Upload</h2></center>
+    <style>
+        .hero {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #drop-area {
+            width: 500px;
+            height: 300px;
+            padding: 30px;
+            background: #fff;
+            text-align:center;
+            border-radius:20px;
+        }
+
+        #image_view {
+            width:100%;
+            height: 100%;
+            border-radius:20px;
+            border: 2px dashed #bbb5ff;
+            background: #f7f8ff;
+            background-size:cover;
+            background-position:center;
+        }
+
+        #image_view img {
+            width:100%;
+            margin-top:25px;
+        }
+
+        #image_view span {
+            display:block;
+            font-size:12px;
+            color:#777;
+            margin-top:15px;
+        }
+    </style>
+<center>
+    <form action="{% url 'image_blur' %}" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <label for="input-file" id="drop-area">
+            {{ form.image }}
+            <div id="image_view">
+                <img src="icon.png">
+                <p>Drag and drop or click here <br>to upload image</p>
+                <span>Upload any images from the desktop</span>
+            </div>
+        </label>
+        <br>
+        <button style="border-color: #000000;" id="blurFace" class="btn">Blur Faces</button>
+        <input type="checkbox" id="blurCheck" name="blurFace" value="" style="display:none;">
+        <button style="border-color: #000000;" id="blurText" class="btn">Blur Text</button>
+        <input type="checkbox" id="blurCheckText" name="blurText" value="" style="display:none;">
+        <br><br>
+        <input class="btn btn-primary" type="submit" value="Upload">
+    </form>
+</center>
+
+
+<script>
+const dropFile = document.getElementById("drop-area");
+var inputFile = document.getElementById("input-file");
+inputFile.style.display = 'none';
+const image_view = document.getElementById("image_view");
+
+inputFile.addEventListener('change', uploadImage);
+
+function uploadImage() {
+    let imgLink = URL.createObjectURL(inputFile.files[0]);
+    image_view.style.backgroundImage = `url(${imgLink})`;
+    image_view.textContent = "";
+}
+
+const blurFace = document.getElementById('blurFace');
+
+blurFace.addEventListener('click', () => {
+    const check = document.getElementById('blurCheck');
+    if(!check.checked) {
+        blurFace.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        blurFace.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const blurText = document.getElementById('blurText');
+
+blurText.addEventListener('click', () => {
+    const check = document.getElementById('blurCheckText');
+    if(!check.checked) {
+        blurText.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        blurText.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+dropFile.addEventListener("dragover", function(e){
+    e.preventDefault();
+})
+
+dropFile.addEventListener("drop", function(e){
+    e.preventDefault();
+    const file = e.dataTransfer.files;
+    inputFile.files = file;
+    uploadImage();
+})
+
+</script>
+{% endblock %}

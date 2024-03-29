@@ -1,0 +1,787 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>Video Upload</h2>
+    <style>
+        .hero {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #drop-area {
+            width: 500px;
+            height: 300px;
+            padding: 30px;
+            background: #fff;
+            text-align:center;
+            border-radius:20px;
+        }
+
+        #image_view {
+            width:100%;
+            height: 100%;
+            border-radius:20px;
+            border: 2px dashed #bbb5ff;
+            background: #f7f8ff;
+            background-size:cover;
+            background-position:center;
+        }
+
+        #image_view img {
+            width:100%;
+            margin-top:25px;
+        }
+
+        #image_view span {
+            display:block;
+            font-size:12px;
+            color:#777;
+            margin-top:15px;
+        }
+        .entire-width {
+            width:100;
+            display:block;
+        }
+        .myclass{
+            display:inline-block;
+            width: 80px;
+            height: 40px;
+        }
+    </style>
+
+
+<center>
+    <h2>Audio Filtering</h2>
+    <form action="{% url 'video_blur' %}" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td>
+                    <button style="border-color: #000000;" id="pornography" class="btn">Dates</button>
+                    <input type="checkbox" id="pornographyIn" name="date" value="" style="display:none;">
+                </td>
+                <td>
+                    <button style="border-color: #000000;" id="profanity" class="btn">Profanity</button>
+                    <input type="checkbox" id="profanityIn" name="profanity" value="" style="display:none;">
+                </td>
+                <td>
+                    <button style="border-color: #000000;" id="healthissues" class="btn">Date of Birth</button>
+                    <input type="checkbox" id="healthIssuesIn" name="date_of_birth" value="" style="display:none;">
+                </td>
+                <td>
+                    <button style="border-color: #000000;" id="alcohol" class="btn">Medical Condition</button>
+                    <input type="checkbox" id="alcoholIn" name="medical_condition" value="" style="display:none;">
+                </td>
+                <td>
+                    <button style="border-color: #000000;" id="companyFinancials" class="btn">Blood Type</button>
+                    <input type="checkbox" id="companyFinancialsIn" name="blood_type" value="" style="display:none;">
+                </td>
+                <td>
+                    <button style="border-color: #000000;" id="socialissues" class="btn">Nationality</button>
+                    <input type="checkbox" id="socialissuesIn" name="nationality" value="" style="display:none;">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button style="border-color: #000000;" id="drugs" class="btn">Injury</button>
+                    <input type="checkbox" id="drugsIn" name="injury" value="" style="display:none;">
+                </td>
+                <td>
+                    <button style="border-color: #000000;" id="hatespeech" class="btn">Email Address</button>
+                    <input type="checkbox" id="hateSpeechIn" name="email_address" value="" style="display:none;">
+                </td>
+
+                <td>
+                    <button style="border-color: #000000;" id="naturalDisasters" class="btn">Phone Number</button>
+                    <input type="checkbox" id="naturalDisastersIn" name="phone_number" value="" style="display:none;">
+                </td>
+                <td>
+                    <button style="border-color: #000000;" id="accidents" class="btn">Medical Process</button>
+                    <input type="checkbox" id="accidentsIn" name="medical_process" value="" style="display:none;">
+                </td>
+                <td>
+                    <button style="border-color: #000000;" id="NSFW" class="btn">Credit Cards</button>
+                    <input type="checkbox" id="NSFWIn" name="credit_card" value="" style="display:none;">
+                </td>
+                <td>
+                    <button style="border-color: #000000;" id="organization" class="btn">Organization</button>
+                    <input type="checkbox" id="organizationIn" name="organization" value="" style="display:none;">
+                </td>
+            </tr>
+                <tr>
+                    <td>
+                        <button style="border-color: #000000;" id="crime" class="btn">Drugs</button>
+                        <input type="checkbox" id="crimeIn" name="drug" value="" style="display:none;">
+                    </td>
+                    <td>
+                        <button style="border-color: #000000;" id="language" class="btn">Language</button>
+                        <input type="checkbox" id="languageIn" name="language" value="" style="display:none;">
+                    </td>
+                    <td>
+                        <button style="border-color: #000000;" id="money_amount" class="btn">Money Amount</button>
+                        <input type="checkbox" id="money_amountIn" name="money_amount" value="" style="display:none;">
+                    </td>
+                    <td>
+                        <button style="border-color: #000000;" id="drivers_license" class="btn">Drivers License</button>
+                        <input type="checkbox" id="drivers_licenseIn" name="drivers_license" value="" style="display:none;">
+                    </td>
+                    <td>
+                        <button style="border-color: #000000;" id="person_age" class="btn">Person Age</button>
+                        <input type="checkbox" id="person_ageIn" name="person_age" value="" style="display:none;">
+                    </td>
+                    <td>
+                        <button style="border-color: #000000;" id="gambling" class="btn">Number Sequence</button>
+                        <input type="checkbox" id="gamblingIn" name="number_sequence" value="" style="display:none;">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button style="border-color: #000000;" id="terrorism" class="btn">Event</button>
+                        <input type="checkbox" id="terrorismIn" name="event" value="" style="display:none;">
+                    </td>
+                    <td>
+                        <button style="border-color: #000000;" id="religion" class="btn">Religion</button>
+                        <input type="checkbox" id="religionIn" name="religion" value="" style="display:none;">
+                    </td>
+                    <td>
+                        <button style="border-color: #000000;" id="person_name" class="btn">Person Name</button>
+                        <input type="checkbox" id="person_nameIn" name="person_name" value="" style="display:none;">
+                    </td>
+
+                    <td>
+                        <button style="border-color: #000000;" id="political_affiliation" class="btn">Political Affiliation</button>
+                        <input type="checkbox" id="political_affiliationIn" name="political_afiliation" value="" style="display:none;">
+                    </td>
+                    <td>
+                        <button style="border-color: #000000;" id="occupation" class="btn">Occupation</button>
+                        <input type="checkbox" id="occupationIn" name="occupation" value="" style="display:none;">
+                    </td>
+                    <td>
+                        <button style="border-color: #000000;" id="banking_information" class="btn">Banking Information</button>
+                        <input type="checkbox" id="banking_informationIn" name="banking_information" value="" style="display:none;">
+                    </td>
+                </tr>
+        </table>
+
+
+        <label for="input-file" id="drop-area">
+            {{ form.video }}
+            <div id="image_view">
+                <img src="icon.png" id="video_view">
+                <p>Drag and drop or click here <br>to upload video</p>
+                <span>Upload any video from the desktop</span>
+            </div>
+        </label>
+        <br>
+        <button style="border-color: #000000;" id="blurFace" class="btn">Blur Faces</button>
+        <br>
+        <input type="checkbox" id="blurCheck" name="blurFace" value="" style="display:none;">
+        <button style="border-color: #000000;" id="blurText" class="btn">Blur Text</button>
+        <input type="checkbox" id="blurCheckText" name="blurText" value="" style="display:none;">
+        <br>
+        <button style="border-color: #000000;" id="selectall" class="btn btn-secondary">Select All</button>
+        <br><br>
+        <input class="btn btn-primary" type="submit" value="Upload">
+    </form>
+</center>
+
+<script>
+const dropFile = document.getElementById("drop-area");
+var inputFile = document.getElementById("input-file");
+const videoPreview = document.getElementById("video-view");
+inputFile.style.display = 'none';
+const image_view = document.getElementById("image_view");
+
+inputFile.addEventListener('change', uploadImage);
+
+function uploadImage() {
+    const video = document.createElement('video');
+    video.src = URL.createObjectURL(inputFile.files[0]);
+    video.onloadedmetadata = function() {
+        const canvas = document.createElement('canvas');
+        canvas.width = this.videoWidth;
+        canvas.height = this.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
+                this.currentTime = this.duration;
+        this.onseeked = function() {
+            ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
+
+            // Access the last frame as an image (data URL)
+            const imgLink = canvas.toDataURL('image/png');
+            console.log(imgLink); // Use the image URL as needed
+            image_view.style.backgroundImage = `url(${imgLink})`;
+            image_view.textContent = "";
+        };
+    };
+}
+
+
+dropFile.addEventListener("dragover", function(e){
+    e.preventDefault();
+})
+
+dropFile.addEventListener("drop", function(e){
+    e.preventDefault();
+    const file = e.dataTransfer.files;
+    inputFile.files = file;
+    uploadImage();
+})
+
+const blurText = document.getElementById('blurText');
+
+blurText.addEventListener('click', () => {
+    const check = document.getElementById('blurCheckText');
+    if(!check.checked) {
+        blurText.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        blurText.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const blurFace = document.getElementById('blurFace');
+
+blurFace.addEventListener('click', () => {
+    const check = document.getElementById('blurCheck');
+    if(!check.checked) {
+        blurFace.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        blurFace.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+
+const profanity = document.getElementById('profanity');
+
+profanity.addEventListener('click', () => {
+    const check = document.getElementById('profanityIn');
+    if(!check.checked) {
+        profanity.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        profanity.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const accidents = document.getElementById('accidents');
+
+accidents.addEventListener('click', () => {
+    const check = document.getElementById('accidentsIn');
+    if(!check.checked) {
+        accidents.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        accidents.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const language = document.getElementById('language');
+
+language.addEventListener('click', () => {
+    const check = document.getElementById('languageIn');
+    if(!check.checked) {
+        language.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        language.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const money_amount = document.getElementById('money_amount');
+
+money_amount.addEventListener('click', () => {
+    const check = document.getElementById('money_amountIn');
+    if(!check.checked) {
+        money_amount.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        money_amount.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+const person_name = document.getElementById('person_name');
+
+person_name.addEventListener('click', () => {
+    const check = document.getElementById('person_nameIn');
+    if(!check.checked) {
+        person_name.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        person_name.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+const person_age = document.getElementById('person_age');
+
+person_age.addEventListener('click', () => {
+    const check = document.getElementById('person_ageIn');
+    if(!check.checked) {
+        person_age.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        person_age.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+const organization = document.getElementById('organization');
+
+organization.addEventListener('click', () => {
+    const check = document.getElementById('organizationIn');
+    if(!check.checked) {
+        organization.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        organization.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+const political_affiliation = document.getElementById('political_affiliation');
+
+political_affiliation.addEventListener('click', () => {
+    const check = document.getElementById('political_affiliationIn');
+    if(!check.checked) {
+        political_affiliation.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        political_affiliation.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const occupation = document.getElementById('occupation');
+
+occupation.addEventListener('click', () => {
+    const check = document.getElementById('occupationIn');
+    if(!check.checked) {
+        occupation.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        occupation.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+const religion = document.getElementById('religion');
+
+religion.addEventListener('click', () => {
+    const check = document.getElementById('religionIn');
+    if(!check.checked) {
+        religion.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        religion.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const drivers_license = document.getElementById('drivers_license');
+
+drivers_license.addEventListener('click', () => {
+    const check = document.getElementById('drivers_license');
+    if(!check.checked) {
+        drivers_license.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        drivers_license.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+const banking_information = document.getElementById('banking_information');
+
+banking_information.addEventListener('click', () => {
+    const check = document.getElementById('banking_informationIn');
+    if(!check.checked) {
+        banking_information.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        banking_information.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+
+const alcohol = document.getElementById('alcohol');
+
+alcohol.addEventListener('click', () => {
+    const check = document.getElementById('alcoholIn');
+    if(!check.checked) {
+        alcohol.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        alcohol.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const companyFinancials = document.getElementById('companyFinancials');
+
+companyFinancials.addEventListener('click', () => {
+    const check = document.getElementById('companyFinancialsIn');
+    if(!check.checked) {
+        companyFinancials.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        companyFinancials.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const crime = document.getElementById('crime');
+
+crime.addEventListener('click', () => {
+    const check = document.getElementById('crimeIn');
+    if(!check.checked) {
+        crime.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        crime.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const drugs = document.getElementById('drugs');
+
+drugs.addEventListener('click', () => {
+    const check = document.getElementById('drugsIn');
+    if(!check.checked) {
+        drugs.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        drugs.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const gambling = document.getElementById('gambling');
+
+gambling.addEventListener('click', () => {
+    const check = document.getElementById('gamblingIn');
+    if(!check.checked) {
+        gambling.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        gambling.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const hatespeech = document.getElementById('hatespeech');
+
+hatespeech.addEventListener('click', () => {
+    const check = document.getElementById('hateSpeechIn');
+    if(!check.checked) {
+        hatespeech.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        hatespeech.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const healthissues = document.getElementById('healthissues');
+
+healthissues.addEventListener('click', () => {
+    const check = document.getElementById('healthIssuesIn');
+    if(!check.checked) {
+        healthissues.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        healthissues.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const naturalDisasters = document.getElementById('naturalDisasters');
+
+naturalDisasters.addEventListener('click', () => {
+    const check = document.getElementById('naturalDisastersIn');
+    if(!check.checked) {
+        naturalDisasters.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        naturalDisasters.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const NSFW = document.getElementById('NSFW');
+
+NSFW.addEventListener('click', () => {
+    const check = document.getElementById('NSFWIn');
+    if(!check.checked) {
+        NSFW.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        NSFW.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const pornography = document.getElementById('pornography');
+
+pornography.addEventListener('click', () => {
+    const check = document.getElementById('pornographyIn');
+    if(!check.checked) {
+        pornography.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        pornography.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const socialissues = document.getElementById('socialissues');
+
+socialissues.addEventListener('click', () => {
+    const check = document.getElementById('socialissuesIn');
+    if(!check.checked) {
+        socialissues.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        socialissues.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+
+const terrorism = document.getElementById('terrorism');
+
+terrorism.addEventListener('click', () => {
+    const check = document.getElementById('terrorismIn');
+    if(!check.checked) {
+        terrorism.classList.add("btn-secondary");
+        check.checked = true;
+        check.value = "on";
+    } else {
+        terrorism.classList.remove("btn-secondary");
+        check.checked = false;
+        check.value = "";
+    }
+});
+
+const selectall = document.getElementById('selectall');
+
+selectall.addEventListener('click', () => {
+    const terrorismIn = document.getElementById('terrorismIn');
+    if(!terrorismIn.checked) {
+        terrorism.classList.add("btn-secondary");
+        terrorismIn.checked = true;
+        terrorismIn.value = "on";
+    }
+    const socialIssuesIn = document.getElementById('socialissuesIn');
+    if(!socialissuesIn.checked) {
+        socialissues.classList.add("btn-secondary");
+        socialIssuesIn.checked = true;
+        socialIssuesIn.value = "on";
+    }
+    const pornographyIn = document.getElementById('pornographyIn');
+    if(!pornographyIn.checked) {
+        pornography.classList.add("btn-secondary");
+        pornographyIn.checked = true;
+        pornographyIn.value = "on";
+    }
+    const NSFWIn = document.getElementById('NSFWIn');
+    if(!NSFWIn.checked) {
+        NSFW.classList.add("btn-secondary");
+        NSFWIn.checked = true;
+        NSFWIn.value = "on";
+    }
+    const naturalDisastersIn = document.getElementById('naturalDisastersIn');
+    if(!naturalDisastersIn.checked) {
+        naturalDisasters.classList.add("btn-secondary");
+        naturalDisastersIn.checked = true;
+        naturalDisastersIn.value = "on";
+    }
+    const healthIssuesIn = document.getElementById('healthIssuesIn');
+    if(!healthIssuesIn.checked) {
+        healthissues.classList.add("btn-secondary");
+        healthIssuesIn.checked = true;
+        healthIssuesIn.value = "on";
+    }
+    const hateSpeechIn = document.getElementById('hateSpeechIn');
+    if(!hateSpeechIn.checked) {
+        hatespeech.classList.add("btn-secondary");
+        hateSpeechIn.checked = true;
+        hateSpeechIn.value = "on";
+    }
+    const gamblingIn = document.getElementById('gamblingIn');
+    if(!gamblingIn.checked) {
+        gambling.classList.add("btn-secondary");
+        gamblingIn.checked = true;
+        gamblingIn.value = "on";
+    }
+    const drugsIn = document.getElementById('drugsIn');
+    if(!drugsIn.checked) {
+        drugs.classList.add("btn-secondary");
+        drugsIn.checked = true;
+        drugsIn.value = "on";
+    }
+    const crimeIn = document.getElementById('crimeIn');
+    if(!crimeIn.checked) {
+        crime.classList.add("btn-secondary");
+        crimeIn.checked = true;
+        crimeIn.value = "on";
+    }
+    const companyFinancialsIn = document.getElementById('companyFinancialsIn');
+    if(!companyFinancialsIn.checked) {
+        companyFinancials.classList.add("btn-secondary");
+        companyFinancialsIn.checked = true;
+        companyFinancialsIn.value = "on";
+    }
+    const alcoholIn = document.getElementById('alcoholIn');
+    if(!alcoholIn.checked) {
+        alcohol.classList.add("btn-secondary");
+        alcoholIn.checked = true;
+        alcoholIn.value = "on";
+    }
+    const accidentsIn = document.getElementById('accidentsIn');
+    if(!accidentsIn.checked) {
+        accidents.classList.add("btn-secondary");
+        accidentsIn.checked = true;
+        accidentsIn.value = "on";
+    }
+    const profanityIn = document.getElementById('profanityIn');
+    if(!profanityIn.checked) {
+        profanity.classList.add("btn-secondary");
+        profanityIn.checked = true;
+        profanityIn.value = "on";
+    }
+    const blurCheck = document.getElementById('blurCheck');
+    if(!blurCheck.checked) {
+        blurFace.classList.add("btn-secondary");
+        blurCheck.checked = true;
+        blurCheck.value = "on";
+    }
+    const languageIn = document.getElementById('languageIn');
+    if(!languageIn.checked) {
+        language.classList.add("btn-secondary");
+        languageIn.checked = true;
+        languageIn.value = "on";
+    }
+    const money_amountIn = document.getElementById('money_amountIn');
+    if(!money_amountIn.checked) {
+        money_amount.classList.add("btn-secondary");
+        money_amountIn.checked = true;
+        money_amountIn.value = "on";
+    }
+    const person_ageIn = document.getElementById('person_ageIn');
+    if(!person_ageIn.checked) {
+        person_age.classList.add("btn-secondary");
+        person_ageIn.checked = true;
+        person_ageIn.value = "on";
+    }
+    const person_nameIn = document.getElementById('person_nameIn');
+    if(!person_nameIn.checked) {
+        person_name.classList.add("btn-secondary");
+        person_nameIn.checked = true;
+        person_nameIn.value = "on";
+    }
+    const occupationIn = document.getElementById('occupationIn');
+    if(!occupationIn.checked) {
+        occupation.classList.add("btn-secondary");
+        occupationIn.checked = true;
+        occupationIn.value = "on";
+    }
+    const organizationIn = document.getElementById('organizationIn');
+    if(!organizationIn.checked) {
+        organization.classList.add("btn-secondary");
+        organizationIn.checked = true;
+        organizationIn.value = "on";
+    }
+    const political_affiliationIn = document.getElementById('political_affiliationIn');
+    if(!political_affiliationIn.checked) {
+        political_affiliation.classList.add("btn-secondary");
+        political_affiliationIn.checked = true;
+        political_affiliationIn.value = "on";
+    }
+    const religionIn = document.getElementById('religionIn');
+    if(!religionIn.checked) {
+        religion.classList.add("btn-secondary");
+        religionIn.checked = true;
+        religionIn.value = "on";
+    }
+    const drivers_licenseIn = document.getElementById('drivers_licenseIn');
+    if(!drivers_licenseIn.checked) {
+        drivers_license.classList.add("btn-secondary");
+        drivers_licenseIn.checked = true;
+        drivers_licenseIn.value = "on";
+    }
+    const banking_informationIn = document.getElementById('banking_informationIn');
+    if(!banking_informationIn.checked) {
+        banking_information.classList.add("btn-secondary");
+        banking_informationIn.checked = true;
+        banking_informationIn.value = "on";
+    }
+    const blurTextIn = document.getElementById('blurCheckText');
+    if(!blurTextIn.checked) {
+        blurText.classList.add("btn-secondary");
+        blurTextIn.checked = true;
+        blurTextIn.value = "on";
+    }
+
+
+
+});
+</script>
+{% endblock %}
+

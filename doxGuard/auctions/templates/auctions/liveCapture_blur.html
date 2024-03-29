@@ -1,0 +1,154 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+    <style>
+        #localVideo {
+            border-radius: 25px;
+        }
+    </style>
+    <center><video id="localVideo" autoplay playsinline></video></center>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/1.8.0/ffmpeg.min.js"></script>
+    <script>
+        let constraintObj = {
+            audio: true,
+            video: {
+                facingMode: "user",
+                width: { min: 640, ideal: 1280, max: 1920 },
+                height: { min: 480, ideal: 720, max: 1080 }
+            }
+        };
+        // width: 1280, height: 720  -- preference only
+        // facingMode: {exact: "user"}
+        // facingMode: "environment"
+
+        //handle older browsers that might implement getUserMedia in some way
+        if (navigator.mediaDevices === undefined) {
+            navigator.mediaDevices = {};
+            navigator.mediaDevices.getUserMedia = function(constraintObj) {
+                let getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                if (!getUserMedia) {
+                    return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+                }
+                return new Promise(function(resolve, reject) {
+                    getUserMedia.call(navigator, constraintObj, resolve, reject);
+                });
+            }
+        }else{
+            navigator.mediaDevices.enumerateDevices()
+            .then(devices => {
+                devices.forEach(device=>{
+                    console.log(device.kind.toUpperCase(), device.label);
+                    //, device.deviceId
+                })
+            })
+            .catch(err=>{
+                console.log(err.name, err.message);
+            })
+        }
+        navigator.mediaDevices.getUserMedia(constraintObj)
+        .then(function(mediaStreamObj) {
+            //connect the media stream to the first video element
+            let video = document.getElementById('localVideo');
+            //if ("srcObject" in video) {
+            //    video.srcObject = mediaStreamObj;
+            //} else {
+                //old version
+            //    video.src = window.URL.createObjectURL(mediaStreamObj);
+            //}
+
+            video.onloadedmetadata = function(ev) {
+                //show in the video element what is being captured by the webcam
+                video.play();
+            };
+            console.log(mediaStreamObj);
+            //add listeners for saving video/audio
+            let mediaRecorder = new MediaRecorder(mediaStreamObj);
+            let video_meta_data;
+            let concatenatedBlob;
+            mediaRecorder.ondataavailable = async function(ev) {
+                let chunks = []
+                chunks.push(ev.data);
+                let blob = new Blob(chunks, { 'type' : 'video/mp4;' });
+                //let blobUrl = URL.createObjectURL(blob);
+                //previousBlobUrl = blobUrl;
+                let formData = new FormData();
+                formData.append('video', blob);
+                if (!video_meta_data) {
+                    let firstChunk = blob.slice(0, 1024);
+                    video_meta_data = new Blob([firstChunk], { type: blob.type });
+                    console.log("Meta Data", video_meta_data);
+                    concatenatedBlob = blob
+                } else {
+                    let concatenatedArrayBuffer = await concatenateBlobs(video_meta_data, blob);
+                    // Create a new Blob from the concatenated data
+                    concatenatedBlob = new Blob([concatenatedArrayBuffer], { type: blob.type });
+                }
+                console.log("Chunks", concatenatedBlob);
+                finalForm = new FormData();
+                finalForm.append('video', concatenatedBlob);
+                try {
+                    const response = await fetch('/liveCapture_blur', {
+                        method: 'PUT',
+                        headers: { "X-CSRFtoken": "{{ csrf_token }}" },
+                        body: finalForm
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to upload blob data');
+                    }
+
+                    const result = await response.json();
+                    let blobUrl = URL.createObjectURL(concatenatedBlob);
+                    console.log(blobUrl);
+                    video.srcObject = null;
+                    video.src = blobUrl;
+                    video.load();
+                    video.play();
+                } catch (error) {
+                    console.error('Error:', error.message);
+                }
+            };
+            mediaRecorder.start(7500);
+        })
+        .catch(function(err) {
+            console.log(err.name, err.message);
+        });
+
+
+        async function concatenateBlobs(blob1, blob2) {
+            let arrayBuffer1 = await blobToArrayBuffer(blob1);
+            let arrayBuffer2 = await blobToArrayBuffer(blob2);
+
+            let concatenatedArrayBuffer = new Uint8Array(arrayBuffer1.byteLength + arrayBuffer2.byteLength);
+            concatenatedArrayBuffer.set(new Uint8Array(arrayBuffer1), 0);
+            concatenatedArrayBuffer.set(new Uint8Array(arrayBuffer2), arrayBuffer1.byteLength);
+
+            return concatenatedArrayBuffer;
+        }
+
+        function blobToArrayBuffer(blob) {
+            return new Promise((resolve, reject) => {
+                let fileReader = new FileReader();
+                fileReader.onload = function() {
+                    resolve(fileReader.result);
+                };
+                fileReader.onerror = function() {
+                    reject(fileReader.error);
+                };
+                fileReader.readAsArrayBuffer(blob);
+            });
+        }
+        /*********************************
+        getUserMedia returns a Promise
+        resolve - returns a MediaStream Object
+        reject returns one of the following errors
+        AbortError - generic unknown cause
+        NotAllowedError (SecurityError) - user rejected permissions
+        NotFoundError - missing media track
+        NotReadableError - user permissions given but hardware/OS error
+        OverconstrainedError - constraint video settings preventing
+        TypeError - audio: false, video: false
+        *********************************/
+    </script>
+
+{% endblock %}
