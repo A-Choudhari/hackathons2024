@@ -242,7 +242,7 @@ def user_transcript(request):
 
 
 def genAI_todo(transcript, todo_list, fail_count=0):
-    genai.configure(api_key='AIzaSyDBq8NMvrMKxdBjwfKXW_amq0W8QDnAYZ4')
+    genai.configure(api_key='')
     model = genai.GenerativeModel(
         "models/gemini-1.5-pro-latest",
         generation_config=genai.GenerationConfig(
