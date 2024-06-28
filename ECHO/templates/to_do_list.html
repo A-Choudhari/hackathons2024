@@ -1,0 +1,129 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+To-Do List
+{% endblock %}
+
+{% block content %}
+    <style>
+        .btn {
+          height: 80px;
+          line-height: 80px;
+          width: 80px;
+          font-size: 2em;
+          font-weight: bold;
+          border-radius: 50%;
+          background-color: #4CAF50;
+          color: white;
+          text-align: center;
+          cursor: pointer;
+        }
+    </style>
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+    <center>
+        <button style="border-radius:40%; background-color:#007d71;width:10%;height:25%;" class="btn" id="recordButton"><i id="design" class="fa fa-microphone"></i></button>
+        <button style="display:none;background-color:#007d71;" id="finish">Finish Recording</button>
+        <div id="output"></div>
+    </center>
+    <script>
+        const recordButton = document.getElementById("recordButton");
+        const design = document.getElementById("design");
+        const finish = document.getElementById("finish");
+        const outputDiv = document.getElementById("output");
+
+        let isRecording = false;
+
+        recordButton.addEventListener("click", toggleRecording);
+
+        finish.addEventListener("click", endRecording);
+
+        let cumulative_transcript = "";
+        let finalized_transcript = "";
+        let interim_transcript = "";
+        let transcript = "";
+
+        function toggleRecording() {
+            isRecording = !isRecording;
+            console.log("toggle recording")
+            if (isRecording) {
+                design.classList.add("fa-square", "fa-solid");
+                design.classList.remove("fa-microphone", "fa");
+                finish.style.display = "none";
+                recordButton.style.backgroundColor = "red";
+                startRecording();
+            } else {
+                design.classList.add("fa-microphone", "fa");
+                design.classList.remove("fa-square", "fa-solid");
+                finish.style.display = "block";
+                recordButton.style.backgroundColor = "#007d71"; // Clear background color
+                const stop_event = new Event("stop");
+                recordButton.dispatchEvent(stop_event);
+                cumulative_transcript += " ";
+                outputDiv.textContent = cumulative_transcript;
+            }
+        }
+
+
+        function startRecording() {
+            if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US'; // You can change this to your preferred language
+
+                recognition.start();
+
+
+                recognition.onresult = function(event) {
+                    transcript = "";
+                    finalized_transcript = "";
+                    interim_transcript = "";
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        transcript += event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalized_transcript += transcript;
+                        } else {
+                            interim_transcript += event.results[i][0].transcript;
+                        }
+                    }
+                    console.log("onresult");
+                    console.log(finalized_transcript);
+                    console.log(interim_transcript);
+                    cumulative_transcript += finalized_transcript;
+                    outputDiv.textContent = cumulative_transcript + interim_transcript;
+
+                };
+
+                recognition.onspeechend = function() {
+                    console.log("onspeechend");
+                    // cumulative_transcript += " " + interim_transcript;
+                    cumulative_transcript += " ";
+                    outputDiv.textContent = cumulative_transcript;
+                    isRecording = false;
+                    recordButton.textContent = "Record";
+                    recordButton.style.backgroundColor = "";
+                }
+
+                recordButton.addEventListener("stop", function() {
+                    console.log("stop event");
+                    recognition.stop();
+
+                });
+            }
+            else {
+                outputDiv.textContent = "Speech Recognition is not supported by your browser.";
+            }
+        }
+    function endRecording() {
+        fetch('/user_transcript', {
+        method: 'POST',
+        headers: {"Content-type": "application/json", "X-CSRFtoken":"{{ csrf_token }}"},
+        body: JSON.stringify({
+            user_transcript: cumulative_transcript,
+            })
+        })
+    }
+    </script>
+{% endblock %}

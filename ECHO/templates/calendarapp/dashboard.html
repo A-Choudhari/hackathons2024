@@ -1,0 +1,216 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Event Dashboard{% endblock title %}
+
+{% block breadcrumb %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+    <div>
+        <h1><i class="fa fa-dashboard"></i> Dashboard</h1>
+        <p>Event Dashboard</p>
+    </div>
+    <ul class="app-breadcrumb breadcrumb">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+    </ul>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <button style="border-radius:40%; background-color:#007d71;width:10%;height:25%;" class="btn" id="recordButton"><i id="design" class="fa fa-microphone"></i></button>
+    <button style="display:none;background-color:#007d71;" id="finish">Finish Recording</button>
+    <div id="output" style="padding:10px;"></div>
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <div id="sampleTable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-hover table-bordered dataTable no-footer" id="sampleTable" role="grid" aria-describedby="sampleTable_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting_asc" tabindex="0" aria-controls="sampleTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 261.641px;">Event Name</th>
+                                            <th class="sorting" tabindex="0" aria-controls="sampleTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 417.312px;">Event Description</th>
+                                            <th class="sorting" tabindex="0" aria-controls="sampleTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 189.281px;">Priority</th>
+                                            <th class="sorting" tabindex="0" aria-controls="sampleTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 102.141px;">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for event in latest_events %}
+                                            <tr role="row" class="odd">
+                                                <td class="sorting_1"><button style="background-color:#007d71;" id="complete_task" onclick="end_task({{ event.id }})"><i class="fa fa-check"></i></button>
+                                                    {{ event.title }}
+                                                </td>
+                                                {% if event.description %}
+                                                    <td>{{ event.description }}</td>
+                                                {% else %}
+                                                    <td><div>N/A</div></td>
+                                                {% endif %}
+                                                <td>{{ event.difficulty }}</td>
+                                                <td>{{ event.end_time }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-lg-3">
+        <div class="widget-small primary coloured-icon">
+            <i class="icon fa fa-files-o fa-3x"></i>
+            <div class="info">
+                <h4>Total Completed Events</h4>
+                <p><b>{{ total_event }}</b></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="widget-small info coloured-icon">
+            <i class="icon fa fa-thumbs-o-up fa-3x"></i>
+            <div class="info">
+                <h4>Total Running Events</h4>
+                <p><b>{{ running_events.count }}</b></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="widget-small warning coloured-icon">
+            <i class="icon fa fa-users fa-3x"></i>
+            <div class="info">
+                <h4>Total Participants</h4>
+                <p><b>10</b></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="widget-small danger coloured-icon">
+            <i class="icon fa fa-star fa-3x"></i>
+            <div class="info">
+                <h4>Stars</h4>
+                <p><b>500</b></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const recordButton = document.getElementById("recordButton");
+        const design = document.getElementById("design");
+        const finish = document.getElementById("finish");
+        const outputDiv = document.getElementById("output");
+
+        let isRecording = false;
+
+        recordButton.addEventListener("click", toggleRecording);
+
+        finish.addEventListener("click", endRecording);
+
+        let cumulative_transcript = "";
+        let finalized_transcript = "";
+        let interim_transcript = "";
+        let transcript = "";
+
+        function toggleRecording() {
+            isRecording = !isRecording;
+            console.log("toggle recording")
+            if (isRecording) {
+                design.classList.add("fa-square", "fa-solid");
+                design.classList.remove("fa-microphone", "fa");
+                finish.style.display = "none";
+                recordButton.style.backgroundColor = "red";
+                startRecording();
+            } else {
+                design.classList.add("fa-microphone", "fa");
+                design.classList.remove("fa-square", "fa-solid");
+                finish.style.display = "block";
+                recordButton.style.backgroundColor = "#007d71"; // Clear background color
+                const stop_event = new Event("stop");
+                recordButton.dispatchEvent(stop_event);
+                cumulative_transcript += " ";
+                outputDiv.textContent = cumulative_transcript;
+            }
+        }
+
+
+        function startRecording() {
+            if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US'; // You can change this to your preferred language
+
+                recognition.start();
+
+
+                recognition.onresult = function(event) {
+                    transcript = "";
+                    finalized_transcript = "";
+                    interim_transcript = "";
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        transcript += event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalized_transcript += transcript;
+                        } else {
+                            interim_transcript += event.results[i][0].transcript;
+                        }
+                    }
+                    console.log("onresult");
+                    console.log(finalized_transcript);
+                    console.log(interim_transcript);
+                    cumulative_transcript += finalized_transcript;
+                    outputDiv.textContent = cumulative_transcript + interim_transcript;
+
+                };
+
+                recognition.onspeechend = function() {
+                    console.log("onspeechend");
+                    // cumulative_transcript += " " + interim_transcript;
+                    cumulative_transcript += " ";
+                    outputDiv.textContent = cumulative_transcript;
+                    isRecording = false;
+                    recordButton.textContent = "Record";
+                    recordButton.style.backgroundColor = "";
+                }
+
+                recordButton.addEventListener("stop", function() {
+                    console.log("stop event");
+                    recognition.stop();
+
+                });
+            }
+            else {
+                outputDiv.textContent = "Speech Recognition is not supported by your browser.";
+            }
+        }
+    function endRecording() {
+        fetch('/user_transcript', {
+        method: 'POST',
+        headers: {"Content-type": "application/json", "X-CSRFtoken":"{{ csrf_token }}"},
+        body: JSON.stringify({
+            user_transcript: cumulative_transcript,
+            })
+        })
+    }
+    function end_task(id) {
+        console.log(id)
+        fetch('/end_item', {
+            method: 'POST',
+            headers: {"Content-type": "application/json", "X-CSRFtoken":"{{ csrf_token }}"},
+            body: JSON.stringify({
+                id_item: id
+            })
+        })
+    }
+
+    </script>
+{% endblock content %}
+
+{% block extrascripts %}
+    <script type="text/javascript" src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/dataTables.bootstrap.min.js' %}"></script>
+    <script type="text/javascript">$('#sampleTable').DataTable();</script>
+{% endblock extrascripts %}

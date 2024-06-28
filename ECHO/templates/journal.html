@@ -1,0 +1,72 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+Daily Check-in
+{% endblock %}
+
+{% block content %}
+<style>
+    .accordion {
+      background-color: #1f9c81;
+      color: #f5f7f7;
+      cursor: pointer;
+      padding: 18px;
+      width: 50%;
+      text-align: left;
+      border: none;
+      outline: none;
+      transition: 0.4s;
+    }
+
+    /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+    .active, .accordion:hover {
+      background-color: #ccc;
+    }
+
+    /* Style the accordion panel. Note: hidden by default */
+    .panel {
+      padding: 0 18px;
+      background-color: white;
+      width: 50%;
+      display: none;
+      color: #0c0d0d;
+      overflow: hidden;
+    }
+</style>
+<center>
+    {% if user_journals %}
+    <h1>Past Journals</h1>
+    <br>
+    {% for user_journal in user_journals %}
+    <button class="accordion"><strong>{{ user_journal.date|date:"m-d-Y" }}</strong></button>
+    <div class="panel">
+      <p>{{ user_journal.text_summary }}</p>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>No journals provided yet.</p>
+    {% endif %}
+</center>
+
+
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        /* Toggle between adding and removing the "active" class,
+        to highlight the button that controls the panel */
+        this.classList.toggle("active");
+
+        /* Toggle between hiding and showing the active panel */
+        var panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+          panel.style.display = "none";
+        } else {
+          panel.style.display = "block";
+        }
+      });
+    }
+</script>
+{% endblock %}
