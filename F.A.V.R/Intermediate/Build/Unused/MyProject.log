@@ -1,0 +1,36 @@
+﻿  Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" MyProjectEditor Win64 Development -Project="C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\MyProject.uproject" -WaitMutex -FromMsBuild
+  Log file: C:\Users\prith_zwg29uj\AppData\Local\UnrealBuildTool\Log.txt
+  Creating makefile for MyProjectEditor (no existing makefile)
+  Parsing headers for MyProjectEditor
+    Running Internal UnrealHeaderTool "C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\MyProject.uproject" "C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\MyProjectEditor\Development\MyProjectEditor.uhtmanifest" -WarningsAsErrors -installed
+  Total of 8 written
+  Reflection code generated for MyProjectEditor in 3.0931405 seconds
+  Building MyProjectEditor...
+  Using Visual Studio 2019 14.29.30153 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+  [Upgrade]
+  [Upgrade] Using backward-compatible include order. The latest version of UE has changed the order of includes, which may require code changes. The current setting is:
+  [Upgrade]     IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_0
+  [Upgrade] Suppress this message by setting 'IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;' in MyProjectEditor.Target.cs.
+  [Upgrade] Alternatively you can set this to 'EngineIncludeOrderVersion.Latest' to always use the latest include order. This will potentially cause compile errors when integrating new versions of the engine.
+  [Upgrade]
+  Determining max actions to execute in parallel (10 physical cores, 12 logical cores)
+    Executing up to 10 processes, one per physical core
+    Requested 1.5 GB free memory per action, 3.77 GB available: limiting max parallel actions to 2
+  Building 13 actions with 2 processes...
+  [1/13] Resource Default.rc2
+  [2/13] Compile SharedPCH.Engine.ShadowErrors.InclOrderUnreal5_0.cpp
+  [3/13] Compile MyProject.cpp
+  [4/13] Compile MyActor.gen.cpp
+  [5/13] Compile MyProject.init.gen.cpp
+  [6/13] Compile py_script.gen.cpp
+  [7/13] Compile py_script.cpp
+  [8/13] Compile python_script.gen.cpp
+  [9/13] Compile MyActor.cpp
+  [10/13] Compile python_script.cpp
+  [11/13] Link UnrealEditor-MyProject.lib
+     Creating library C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\UnrealEditor-MyProject.lib and object C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\UnrealEditor-MyProject.exp
+  [12/13] Link UnrealEditor-MyProject.dll
+     Creating library C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\UnrealEditor-MyProject.suppressed.lib and object C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\UnrealEditor-MyProject.suppressed.exp
+  [13/13] WriteMetadata MyProjectEditor.target
+  Total time in Parallel executor: 113.84 seconds
+  Total execution time: 122.56 seconds

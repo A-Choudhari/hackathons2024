@@ -1,0 +1,15 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "c:\\users\\prith_zwg29uj\\onedrive\\documents\\unreal projects\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\python_script.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\prith_zwg29uj\\onedrive\\documents\\unreal projects\\myproject\\intermediate\\build\\win64\\myprojecteditor\\development\\engine\\sharedpch.engine.shadowerrors.inclorderunreal5_0.h.pch",
+        "Includes": [
+            "c:\\users\\prith_zwg29uj\\onedrive\\documents\\unreal projects\\myproject\\intermediate\\build\\win64\\unrealeditor\\development\\myproject\\definitions.myproject.h",
+            "c:\\users\\prith_zwg29uj\\onedrive\\documents\\unreal projects\\myproject\\source\\myproject\\python_script.h",
+            "c:\\users\\prith_zwg29uj\\onedrive\\documents\\unreal projects\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\python_script.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

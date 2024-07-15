@@ -1,0 +1,24 @@
+{
+	"version": 1,
+	"changelists": [
+		{
+			"guid": "00000000000000000000000000000000",
+			"description": "Default Uncontrolled Changelist",
+			"files": [
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/StarterContent/Blueprints/Blueprint_CeilingLight.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/VRTemplate/Maps/VRTemplateMap.umap",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/FPWeapon/Mesh/human_img__2__Cube.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/FPWeapon/Mesh/Material.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/FPWeapon/Mesh/human_img__2__rp_eric_rigged_001_geo.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/FPWeapon/Mesh/rp_eric_rigged_001_mat.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/FPWeapon/Mesh/rp_eric_rigged_001_mask01.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/FPWeapon/Mesh/rp_eric_rigged_001_dif.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/FPWeapon/Mesh/rp_eric_rigged_001_norm.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/FPWeapon/Mesh/rp_eric_rigged_001_gloss.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/FPWeapon/Mesh/rp_eric_rigged_001_mask02.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/VRTemplate/Blueprints/VRPawn.uasset",
+				"C:/Users/prith_zwg29uj/OneDrive/Documents/Unreal Projects/MyProject/Content/MyPrints/BP_Button.uasset"
+			]
+		}
+	]
+}

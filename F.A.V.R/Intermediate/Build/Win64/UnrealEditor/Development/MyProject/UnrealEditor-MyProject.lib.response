@@ -1,0 +1,19 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-MyProject.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\MyProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.InclOrderUnreal5_0.h.obj"
+"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\MyActor.gen.cpp.obj"
+"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\MyProject.init.gen.cpp.obj"
+"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\python_script.gen.cpp.obj"
+"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\py_script.gen.cpp.obj"
+"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\MyActor.cpp.obj"
+"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\MyProject.cpp.obj"
+"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\python_script.cpp.obj"
+"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\py_script.cpp.obj"
+"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\Default.rc2.res"
+/OUT:"C:\Users\prith_zwg29uj\OneDrive\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\UnrealEditor-MyProject.lib"
